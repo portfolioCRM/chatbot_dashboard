@@ -60,14 +60,13 @@ workflows:
       - deploy-preview:
           filters:
             branches:
-              only: development
-
+              ignore: main
       - newman-test:
           requires:
             - deploy-preview
           filters:
             branches:
-              only: development
+              ignore: main
 
   security-testing:
     triggers:
