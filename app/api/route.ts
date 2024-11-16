@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
  * Handler for GET requests for health care service.
  * @returns {Promise<NextResponse>} A Promise resolving to the Next.js response.
  */
-export async function GET(request: Request): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   try {
     const healthcareData = {
       status: 'healthy',
