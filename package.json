@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check-types": "tsc --pretty --noEmit",
+    "check-format": "prettier --check .",
+    "check-all": "npm run lint && npm run check-types && npm run check-format",
+    "fix-format": "prettier --write ."
   },
   "dependencies": {
     "next": "14.2.18",
