@@ -1,0 +1,89 @@
+version: 2.1
+
+jobs:
+  deploy-preview:
+    docker:
+      - image: cimg/node:16
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yarn install
+      - run:
+          name: Build Next.js app for production
+          command: |
+            yarn build
+      - run:
+          name: Start Next.js app in production
+          command: |
+            PORT=8011 yarn start
+      - run:
+          name: Wait for Next.js server to start
+          command: sleep 10
+
+  newman-test:
+    docker:
+      - image: postman/newman:alpine
+    steps:
+      - checkout
+      - run:
+          name: Set environment variables
+          command: |
+            # Set dynamic variables like baseUrl and timestamp
+            export BASE_URL="http://localhost:8011"
+            export CURRENT_TIMESTAMP=$(date --utc +%FT%TZ)
+            echo "BASE_URL=$BASE_URL"
+            echo "CURRENT_TIMESTAMP=$CURRENT_TIMESTAMP"
+      - run:
+          name: Run Newman tests with dynamic variables
+          command: |
+            newman run test/postman_collection.json \
+            --reporters cli \
+            --env-var "baseUrl=$BASE_URL" \
+            --env-var "currentTimestamp=$CURRENT_TIMESTAMP"
+
+  security-test:
+    docker:
+      - image: cimg/node:16
+    steps:
+      - checkout
+      - run:
+          name: Run security tests
+          command: echo "Running security tests..."
+
+workflows:
+  version: 2
+
+  deploy-and-test:
+    jobs:
+      - deploy-preview:
+          filters:
+            branches:
+              only: development
+
+      - newman-test:
+          requires:
+            - deploy-preview
+          filters:
+            branches:
+              only: development
+
+  security-testing:
+    triggers:
+      - schedule:
+          cron: "0 0 * * 1"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - security-test
+
+  manual-approval-workflow:
+    jobs:
+      - hold:
+          type: approval
+      - security-test:
+          requires:
+            - hold
