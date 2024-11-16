@@ -1,0 +1,49 @@
+{
+    "info": {
+      "_postman_id": "b22156ed-372b-44ac-87be-6cf4f493d36c",
+      "name": "Healthcare API Tests",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "GET /api/healthcare",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{baseUrl}}/api/",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "api",
+              "healthcare"
+            ]
+          }
+        },
+        "response": [
+          {
+            "code": 200,
+            "body": "{\"success\":true,\"data\":{\"status\":\"healthy\",\"service\":\"Health Care Service\",\"timestamp\":\"{{currentTimestamp}}\"}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          {
+            "code": 500,
+            "body": "{\"success\":false,\"data\":{\"status\":\"unhealthy\",\"service\":\"Health Care Service\",\"timestamp\":\"{{currentTimestamp}}\"},\"error\":\"Unknown error occurred\"}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
